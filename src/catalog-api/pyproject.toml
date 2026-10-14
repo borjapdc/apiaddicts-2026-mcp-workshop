@@ -1,0 +1,5 @@
+[project]
+name = "catalog-api"
+version = "1.0.0"
+requires-python = ">=3.11,<3.14"
+dependencies = ["fastapi==0.143.0", "uvicorn==0.54.0", "httpx==0.28.1", "pydantic==2.12.5"]

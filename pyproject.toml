@@ -1,0 +1,29 @@
+[project]
+name = "apiaddicts-mcp-workshop"
+version = "1.0.0"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "mcp==1.30.0",
+  "fastapi==0.143.0",
+  "uvicorn==0.54.0",
+  "httpx==0.28.1",
+  "pydantic==2.12.5",
+  "python-hcl2==7.3.1",
+  "rich>=14,<15",
+]
+
+[dependency-groups]
+dev = ["pytest==9.1.1", "pytest-asyncio>=1.2,<2", "ruff>=0.14,<1", "mypy>=1.18,<2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src/catalog-api/tests", "src/mcp-catalog/tests", "src/mcp-operations/tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 110
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+ignore_missing_imports = true

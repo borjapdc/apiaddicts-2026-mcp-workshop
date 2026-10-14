@@ -1,0 +1,9 @@
+AppRequests
+| where TimeGenerated > ago(24h)
+| where Properties["network.protocol.name"] == "MCP"
+| where Properties["gen_ai.operation.name"] == "tools/call"
+| project TimeGenerated, tool=tostring(Properties["gen_ai.tool.name"]),
+          session=tostring(Properties["gen_ai.conversation.id"]),
+          durationMs=DurationMs, ResultCode, Success, OperationId
+| order by TimeGenerated desc
+| take 20

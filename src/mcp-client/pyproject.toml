@@ -1,0 +1,5 @@
+[project]
+name = "mcp-client"
+version = "1.0.0"
+requires-python = ">=3.11,<3.14"
+dependencies = ["mcp==1.30.0"]

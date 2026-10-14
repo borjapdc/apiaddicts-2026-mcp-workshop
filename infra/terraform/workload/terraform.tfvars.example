@@ -1,0 +1,3 @@
+aca_min_replicas = 1
+aca_max_replicas = 2
+# deploy supplies target IDs, foundation, image digests and origin secrets in linked.auto.tfvars.json.

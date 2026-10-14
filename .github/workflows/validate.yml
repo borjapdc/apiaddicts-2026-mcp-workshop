@@ -1,0 +1,46 @@
+name: validate
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  python:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.5"
+          python-version: "3.11"
+      - run: uv sync --frozen
+      - run: uv run ruff check shared src scripts tests
+      - run: uv run mypy shared src/mcp-client/client.py scripts
+      - run: uv run pytest -q --junitxml=.local/pytest.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-${{ matrix.os }}
+          path: .local/pytest.xml
+  terraform-aspire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.5"
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: terraform fmt -check -recursive infra/terraform
+      - run: |
+          for module in foundation workload gateway; do
+            terraform -chdir=infra/terraform/$module init -input=false -backend=false
+            terraform -chdir=infra/terraform/$module validate
+          done
+      - run: dotnet build aspire/AppHost/AppHost.csproj --nologo
+      - run: |
+          for service in catalog-api mcp-catalog mcp-operations; do
+            docker build -f src/$service/Dockerfile -t apiaddicts/$service:ci .
+          done

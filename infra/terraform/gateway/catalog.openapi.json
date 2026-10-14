@@ -1,0 +1,468 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Corporate Demo Catalog",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/services": {
+      "get": {
+        "summary": "Search Services",
+        "operationId": "search_services",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 120,
+              "default": "",
+              "title": "Query"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "title": "Category",
+              "type": "string",
+              "maxLength": 40,
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Service"
+                  },
+                  "title": "Response Search Services"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/services/{service_id}": {
+      "get": {
+        "summary": "Get Service",
+        "operationId": "get_service",
+        "parameters": [
+          {
+            "name": "service_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Service Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/services/{service_id}/versions": {
+      "get": {
+        "summary": "List Versions",
+        "operationId": "list_versions",
+        "parameters": [
+          {
+            "name": "service_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Service Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response List Versions"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/services/{service_id}/contract": {
+      "get": {
+        "summary": "Get Service Contract",
+        "operationId": "get_service_contract",
+        "parameters": [
+          {
+            "name": "service_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Service Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Service Contract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access-requests": {
+      "post": {
+        "summary": "Create Access Request",
+        "operationId": "create_access_request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccessRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessReceipt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessReceipt": {
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,39}$",
+            "title": "Service Id"
+          },
+          "consumer_id": {
+            "type": "string",
+            "pattern": "^demo-[a-z0-9-]{1,40}$",
+            "title": "Consumer Id"
+          },
+          "purpose": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 10,
+            "pattern": "^[^\\x00-\\x1f]+$",
+            "title": "Purpose"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "demo-pending",
+            "enum": [
+              "demo-pending"
+            ]
+          },
+          "notice": {
+            "type": "string",
+            "title": "Notice",
+            "default": "Fictitious request only; not real authorization"
+          },
+          "storage": {
+            "type": "string",
+            "title": "Storage",
+            "default": "Single replica SQLite; ephemeral across revisions/restarts, not production persistence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "service_id",
+          "consumer_id",
+          "purpose",
+          "request_id"
+        ],
+        "title": "AccessReceipt"
+      },
+      "AccessRequest": {
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,39}$",
+            "title": "Service Id"
+          },
+          "consumer_id": {
+            "type": "string",
+            "pattern": "^demo-[a-z0-9-]{1,40}$",
+            "title": "Consumer Id"
+          },
+          "purpose": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 10,
+            "pattern": "^[^\\x00-\\x1f]+$",
+            "title": "Purpose"
+          }
+        },
+        "type": "object",
+        "required": [
+          "service_id",
+          "consumer_id",
+          "purpose"
+        ],
+        "title": "AccessRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Service": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "owner": {
+            "type": "string",
+            "title": "Owner"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "internal",
+              "restricted"
+            ],
+            "title": "Classification"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "demo_sla_percent": {
+            "type": "number",
+            "title": "Demo Sla Percent"
+          },
+          "sla_notice": {
+            "type": "string",
+            "title": "Sla Notice",
+            "default": "Fictitious demo SLA; not a contractual commitment"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          },
+          "publication_status": {
+            "type": "string",
+            "enum": [
+              "published",
+              "draft"
+            ],
+            "title": "Publication Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "owner",
+          "category",
+          "classification",
+          "version",
+          "demo_sla_percent",
+          "tags",
+          "publication_status"
+        ],
+        "title": "Service"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

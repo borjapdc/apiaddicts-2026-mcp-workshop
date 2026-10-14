@@ -1,0 +1,6 @@
+{
+  "servers": {
+    "apiaddicts-catalog-local": {"type": "http", "url": "http://localhost:8002/mcp"},
+    "apiaddicts-operations-local": {"type": "http", "url": "http://localhost:8003/mcp"}
+  }
+}

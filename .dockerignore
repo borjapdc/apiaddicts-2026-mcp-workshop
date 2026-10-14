@@ -1,0 +1,14 @@
+.git
+.venv
+.local
+**/__pycache__
+**/*.db*
+**/*.tfstate*
+**/*.tfvars
+**/*.tfvars.json
+**/.terraform
+**/bin
+**/obj
+.env*
+.vscode
+docs/evidence

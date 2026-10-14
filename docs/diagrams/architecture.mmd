@@ -1,0 +1,25 @@
+flowchart TB
+  subgraph LOCAL[Aspire local]
+    Client[CLI MCP] --> Read[MCP catalogo]
+    Client --> Write[MCP operaciones]
+    Read --> API[FastAPI catalogo]
+    Write --> API
+    AppHost[AddDockerfile AppHost] -. orquesta .-> Read
+    AppHost -. orquesta .-> Write
+    AppHost -. orquesta .-> API
+  end
+  subgraph AZURE[Plano de datos Azure]
+    CloudClient[CLI MCP / Copilot opcional] --> APIM[APIM Developer: reader/operator]
+    APIM --> Native[ACA MCP catalogo]
+    APIM --> Operations[ACA MCP operaciones]
+    APIM --> REST[REST-backed MCP cuatro tools]
+    Native --> Catalog[ACA catalog-api]
+    Operations --> Catalog
+    REST --> Catalog
+    APIM --> Logs[App Insights / Log Analytics]
+  end
+  Terraform[Terraform foundation/workload/gateway] -. plano de control .-> APIM
+  Terraform -.-> Catalog
+  ACR[ACR Basic + managed pull identity] -. imagenes .-> Native
+  ACR -. imagenes .-> Operations
+  ACR -. imagenes .-> Catalog

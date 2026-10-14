@@ -1,0 +1,8 @@
+requests
+| where timestamp > ago(24h)
+| where customDimensions["network.protocol.name"] == "MCP"
+| where customDimensions["gen_ai.operation.name"] == "tools/call"
+| summarize calls=count(), failures=countif(success == false),
+            p50=percentile(duration, 50), p95=percentile(duration, 95)
+  by tool=tostring(customDimensions["gen_ai.tool.name"])
+| extend errorRatio=todouble(failures)/calls

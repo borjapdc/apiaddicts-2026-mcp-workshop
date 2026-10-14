@@ -1,0 +1,4 @@
+rate_limit_calls          = 5
+rate_limit_period_seconds = 30
+enable_resource_logs      = true
+# deploy supplies target IDs, foundation, backends and secrets in linked.auto.tfvars.json.

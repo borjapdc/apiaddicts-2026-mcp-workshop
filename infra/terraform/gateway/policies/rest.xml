@@ -1,0 +1,28 @@
+<policies>
+	<inbound>
+		<base />
+		<choose>
+			<when condition="@(context.Request.Method != &quot;GET&quot;)">
+				<return-response>
+					<set-status code="403" reason="Read-only REST facade" />
+				</return-response>
+			</when>
+		</choose>
+		<set-header name="x-backend-token" exists-action="override">
+			<value>{{origin-read}}</value>
+		</set-header>
+		<set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
+		<set-header name="x-correlation-id" exists-action="override">
+			<value>@(context.RequestId.ToString())</value>
+		</set-header>
+	</inbound>
+	<backend>
+		<forward-request buffer-response="false" />
+	</backend>
+	<outbound>
+		<base />
+	</outbound>
+	<on-error>
+		<base />
+	</on-error>
+</policies>
