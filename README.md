@@ -70,6 +70,8 @@ scripts/
 
 Las rutas planas anteriores se han sustituido por estas carpetas; no hay copias duplicadas de los scripts. En la raiz de scripts solo queda __init__.py para identificar el paquete Python; todos los comandos se ejecutan desde sus subcarpetas. Los helpers encuentran la raiz del repositorio aunque se invoquen desde otro directorio. Las utilidades Python se ejecutan como modulos desde esa raiz: scripts.terraform.export_openapi y scripts.tools.publish_evidence.
 
+Los tests de wrappers ejecutan Bash en Linux y PowerShell en Windows. Consultar ayuda con --help en Bash o -Help en PowerShell; la ayuda de credentials no consulta Azure ni carga claves.
+
 ## Prerrequisitos realmente probados
 
 | Herramienta | Version observada/probada |

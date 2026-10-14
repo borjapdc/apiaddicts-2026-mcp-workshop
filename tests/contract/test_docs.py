@@ -1,3 +1,4 @@
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -25,9 +26,13 @@ def test_both_platform_command_wrappers_exist():
 
 @pytest.mark.parametrize("command,group", ENTRYPOINT_GROUPS.items())
 def test_reorganized_wrappers_resolve_root_from_another_directory(tmp_path, command, group):
-    result = subprocess.run(["bash", str(ROOT / f"scripts/{group}/{command}.sh"), "--help"],
+    if os.name == "nt":
+        arguments = ["pwsh", "-NoProfile", "-File", str(ROOT / f"scripts/{group}/{command}.ps1"), "-Help"]
+    else:
+        arguments = ["bash", str(ROOT / f"scripts/{group}/{command}.sh"), "--help"]
+    result = subprocess.run(arguments,
                             cwd=tmp_path, text=True, capture_output=True, check=False)
-    assert result.returncode == 0, result.stderr
+    assert result.returncode == 0, result.stdout + result.stderr
     assert "Use:" in result.stdout if command == "credentials" else "APIAddicts workshop" in result.stdout
 
 

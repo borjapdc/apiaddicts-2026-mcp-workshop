@@ -2,6 +2,11 @@
 .SYNOPSIS
 Dot-source para asignar reader/operator keys al environment sin imprimirlas.
 #>
+param([switch]$Help)
+if ($Help) {
+    Write-Host 'Use: . ./scripts/tools/credentials.ps1 (sets reader/operator environment keys without printing them)'
+    return
+}
 $ErrorActionPreference = 'Stop'
 $root = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 & uv --directory $root run --project $root python -m scripts.lib.workshop assert-subscription | Out-Null
